@@ -1,2 +1,78 @@
 from tkinter import *
-print("Hello World")
+# Create the Window
+root = Tk()
+root.title('Create Your Own Pizza')
+root.geometry("500x500")
+# Title the GUI
+titleLabel = Label(root, text="Make Your Own Pizza")
+
+# Create a dropdown menu to select the size of the pizza
+clicked = StringVar()
+sizeOptions = [
+
+    "Select Size",
+    "Large [Up to 3 Toppings]",
+    "Medium [Up to 2 toppings]",
+    "Small [1 topping]"
+
+]
+clicked.set(sizeOptions[0])
+size = OptionMenu(root, clicked, *sizeOptions)
+
+sizeLabel = Label(root, text="Large: $15,   Medium: $13,   Small: $8")
+
+# Create a menu to select toppings
+pepperoniBox = Checkbutton(root, text="Pepperoni")
+sausageBox = Checkbutton(root, text="Sausage")
+hamBox = Checkbutton(root, text="Ham")
+sardinesBox = Checkbutton(root, text="Sardines")
+greenPeppersBox = Checkbutton(root, text="Green Peppers")
+mushroomsBox = Checkbutton(root, text="Mushrooms")
+olivesBox = Checkbutton(root, text="Olives")
+onionsBox = Checkbutton(root, text="Onions")
+pineappleBox = Checkbutton(root, text="Pineapples")
+extraCheeseBox = Checkbutton(root, text="Extra Cheese")
+
+toppingsLabel = Label(root, text="Select topping(s)")
+
+# Confirm Purchase
+def createClick():
+    root2 = Toplevel()
+    root2.title('Confirm Purchase')
+    root2.geometry("350x350")
+
+
+    displayPrice = Label(root2, text="Your pizza will cost " + "[WORK IN PROGRESS]")
+    explainLabel = Label(root2, text="Enter your digital signature to confirm your purchase.")
+    digitalSignature = Entry(root2)
+    confirmButton = Button(root2, text="Confirm Purchase")
+
+    digitalSignature.insert(0, "Type Your Name Here")
+
+
+    displayPrice.pack()
+    explainLabel.pack()
+    digitalSignature.pack()
+    confirmButton.pack()
+
+createPizzaButton = Button(root, text="Create Pizza", command=createClick)
+
+
+# Order the grid
+titleLabel.pack()
+sizeLabel.pack()
+size.pack()
+toppingsLabel.pack()
+pepperoniBox.pack()
+sausageBox.pack()
+hamBox.pack()
+sardinesBox.pack()
+greenPeppersBox.pack()
+mushroomsBox.pack()
+olivesBox.pack()
+onionsBox.pack()
+pineappleBox.pack()
+extraCheeseBox.pack()
+createPizzaButton.pack()
+
+root.mainloop()
