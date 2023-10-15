@@ -1,72 +1,193 @@
+#import tkinter
 from tkinter import *
-# Create the Window
+from tkinter import ttk
+from tkinter import messagebox
+from PIL import ImageTk, Image
+
+# Create the Main Window
 root = Tk()
-root.title('Create Your Own Pizza')
-root.geometry("500x500")
+root.title('Create Your Own Pizza') # titles the GUI
+root.geometry("500x600") # sets a window size
+root.config(bg="#e8ca99") # sets a background color
+
 # Title the GUI
-titleLabel = Label(root, text="Make Your Own Pizza")
+titleLabel = Label(root, text="Make Your Own Pizza", bg="#E8CA99")
+titleLabel.config(font=('Arial', 20))
 
 # Create a dropdown menu to select the size of the pizza
-clicked = StringVar()
 sizeOptions = [
 
     "Select Size",
     "Large [Up to 3 Toppings]",
-    "Medium [Up to 2 toppings]",
-    "Small [1 topping]"
+    "Medium [Up to 2 Toppings]",
+    "Small [1 Topping]"
 
-]
-clicked.set(sizeOptions[0])
-size = OptionMenu(root, clicked, *sizeOptions)
+] # list of options for the dropdown menu
 
-sizeLabel = Label(root, text="Large: $15,   Medium: $13,   Small: $8")
+# Creates a label for the dropdown menu
+sizeLabel = Label(root, text="Large: $15,   Medium: $13,   Small: $8", bg="#E8CA99")
+sizeLabel.config(font=12)
+
+# Creates the dropdown menu and sets default value
+size = ttk.Combobox(root, value=sizeOptions) # variable for the size of the pizza
+size.current(0)
 
 # Create a menu to select toppings
-pepperoniBox = Checkbutton(root, text="Pepperoni")
-sausageBox = Checkbutton(root, text="Sausage")
-hamBox = Checkbutton(root, text="Ham")
-sardinesBox = Checkbutton(root, text="Sardines")
-greenPeppersBox = Checkbutton(root, text="Green Peppers")
-mushroomsBox = Checkbutton(root, text="Mushrooms")
-olivesBox = Checkbutton(root, text="Olives")
-onionsBox = Checkbutton(root, text="Onions")
-pineappleBox = Checkbutton(root, text="Pineapples")
-extraCheeseBox = Checkbutton(root, text="Extra Cheese")
+# toppingTotal counts how many toppings were chosen
+def toppingTotal():
+    total = pepiVal.get() + sausVal.get() + hamVal.get() + sardVal.get() + persVal.get() + musVal.get() + olVal.get() + oniVal.get() + pineVal.get() + xtraVal.get() # number of toppings boxes checked
+    return total
 
-toppingsLabel = Label(root, text="Select topping(s)")
+# these variables keep track of which checkboxes are checked and which are not
+pepiVal = IntVar()
+sausVal = IntVar()
+hamVal = IntVar()
+sardVal = IntVar()
+persVal = IntVar()
+musVal = IntVar()
+olVal = IntVar()
+oniVal = IntVar()
+pineVal = IntVar()
+xtraVal = IntVar()
 
-# Confirm Purchase
-def createClick():
+# These lines create the checkboxes and set background color and connects them to their variables
+pepperoniBox = Checkbutton(root, text="Pepperoni", variable=pepiVal, onvalue=1, offvalue=0, bg="#E8CA99")
+sausageBox = Checkbutton(root, text="Sausage", variable=sausVal, onvalue=1, offvalue=0, bg="#E8CA99")
+hamBox = Checkbutton(root, text="Ham", variable=hamVal, onvalue=1, offvalue=0, bg="#E8CA99")
+sardinesBox = Checkbutton(root, text="Sardines", variable=sardVal, onvalue=1, offvalue=0, bg="#E8CA99")
+greenPeppersBox = Checkbutton(root, text="Green Peppers", variable=persVal, onvalue=1, offvalue=0, bg="#E8CA99")
+mushroomsBox = Checkbutton(root, text="Mushrooms", variable=musVal, onvalue=1, offvalue=0, bg="#E8CA99")
+olivesBox = Checkbutton(root, text="Olives", variable=olVal, onvalue=1, offvalue=0, bg="#E8CA99")
+onionsBox = Checkbutton(root, text="Onions", variable=oniVal, onvalue=1, offvalue=0, bg="#E8CA99")
+pineappleBox = Checkbutton(root, text="Pineapples", variable=pineVal, onvalue=1, offvalue=0, bg="#E8CA99")
+extraCheeseBox = Checkbutton(root, text="Extra Cheese", variable=xtraVal, onvalue=1, offvalue=0, bg="#E8CA99")
+
+# Label for toppings boxes
+toppingsLabel = Label(root, text="Select Topping(s)", bg="#E8CA99")
+toppingsLabel.config(font=10)
+
+# Label shows where the meat choices start
+meatLabel = Label(root, text="Meats", bg="#E8CA99")
+meatLabel.config(font=("bold"))
+
+# Label shows where non-meat labels start
+othersLabel = Label(root, text="Fruits, Veggies, and Other Toppings", bg="#E8CA99")
+othersLabel.config(font='bold')
+
+#Insert first image
+firstImage = Image.open("C:pizza_folder/open_pizza.png") #opens the image
+resized = firstImage.resize((100, 100)) # resizes the image
+fitImage = ImageTk.PhotoImage(resized)
+imageInsert = Label(root, image=fitImage, text="Open Pizza Box", bg="#E8CA99") #creates label for the image
+
+#Insert Second Image
+secondImage = Image.open("C:/pizza_folder/pizza_deliver.png")
+resized2 = secondImage.resize((100, 100))
+fitImage2 = ImageTk.PhotoImage(resized2)
+
+
+# Calculate the price of the pizza
+def calculatePrice():
+    total = toppingTotal() # calls the total from another function
+    price = 0 # sets a default price
+    # calculates prices based on the size of the pizza and number of toppings (up charges for extra toppings)
+    if size.get() == "Large [Up to 3 Toppings]" and total > 3:
+        price = float(((total - 3) * 0.75) + 15)
+    elif size.get() == "Large [Up to 3 Toppings]" and total <= 3:
+        price = int(15)
+    elif size.get() == "Medium [Up to 2 Toppings]" and total > 2:
+        price = float(((total - 2) * 0.75) + 13)
+    elif size.get() == "Medium [Up to 2 Toppings]" and total <= 2:
+        price = int(13)
+    elif size.get() == "Small [1 Topping]" and total > 1:
+        price = float(((total - 1) * 0.75) + 8)
+    elif size.get() == "Small [1 Topping]" and total <= 1:
+        price = int(8)
+    return price
+
+
+# Create root2 (second window)
+def confirmPurchase():
     root2 = Toplevel()
     root2.title('Confirm Purchase')
     root2.geometry("350x350")
+    root2.config(bg="#E8CA99")
 
+    price = calculatePrice()
 
-    displayPrice = Label(root2, text="Your pizza will cost " + "[WORK IN PROGRESS]")
-    explainLabel = Label(root2, text="Enter your digital signature to confirm your purchase.")
+    # Input Validation
+    def checkOut():
+        invalid_chars = ('!', '@', '#', '%', '^', "&", '*', '(', ')', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',') # lists invalid characters
+
+        # Counts invalid characters
+        invalid_chars_counter = 0
+        for char in invalid_chars:
+            if char in digitalSignature.get():
+                invalid_chars_counter += 1
+
+        # Displays various messages depending on user input
+        if invalid_chars_counter > 0:
+            messagebox.showerror('Invalid Name', "Name cannot include numbers or special characters.")
+        elif digitalSignature.get() == "Type Your Name Here":
+            messagebox.showerror("Required Field Not Filled", "Please confirm your purchase with your digital signature.")
+        elif invalid_chars_counter == 0:
+            finalLabel = Label(root2, text="Thank you, " + str(digitalSignature.get()) + ". Have a nice day!", bg="#E8CA99").pack()
+            closeOut = Button(root2, text="Exit Program", command=root.quit, bg="#58fc84").pack() # exit button
+            imageInsert = Label(root2, image=fitImage2, text="The pizza delivery driver is on his way!", bg="#E8CA99").pack()
+
+    # Show final price of selected choices
+    displayPrice = Label(root2, text="Your pizza will cost " + "$" + '%.2f' % price, bg="#E8CA99")
+    explainLabel = Label(root2, text="Enter your digital signature to confirm your purchase.", bg="#E8CA99")
     digitalSignature = Entry(root2)
-    confirmButton = Button(root2, text="Confirm Purchase")
+    confirmButton = ttk.Button(root2, text="Confirm Purchase", command=checkOut)
 
-    digitalSignature.insert(0, "Type Your Name Here")
+    digitalSignature.insert(0, "Type Your Name Here") # user input name
 
-
+    # packs root2
     displayPrice.pack()
     explainLabel.pack()
     digitalSignature.pack()
     confirmButton.pack()
 
-createPizzaButton = Button(root, text="Create Pizza", command=createClick)
+    return digitalSignature
 
+# Checks to make sure that the number of toppings is less than or equal to the amount allowed by the chosen size
+def toppingsSizeMatchUp():
+    total = toppingTotal()
+    if size.get() == "Select Size":
+        messagebox.showwarning('No Size Selected', "Please select a size for your pizza.") #error message if user does not choose a size
+    elif size.get() == "Large [Up to 3 Toppings]" and total > 3:
+        response = messagebox.askyesno('Too Many Toppings!', "If you proceed, you will be charged 0.75 per extra topping. Do you wish to continue?")
+        if response == 1:
+            confirmPurchase()
 
-# Order the grid
+    elif size.get() == "Medium [Up to 2 Toppings]" and total > 2:
+        response = messagebox.askyesno('Too Many Toppings!',"If you proceed, you will be charged 0.75 per extra topping. Do you wish to continue?")
+        if response == 1:
+            confirmPurchase()
+
+    elif size.get() == "Small [1 Topping]" and total > 1:
+        response = messagebox.askyesno('Too Many Toppings!',"If you proceed, you will be charged 0.75 per extra topping. Do you wish to continue?")
+        if response == 1:
+            confirmPurchase()
+
+    else:
+        confirmPurchase()
+
+# After size and toppings are chosen, this prompts the other functions to check the selections and calculate a price
+createPizzaButton = ttk.Button(root, text="Create Pizza", command=toppingsSizeMatchUp)
+
+# Order the pack for root (first window)
 titleLabel.pack()
 sizeLabel.pack()
 size.pack()
 toppingsLabel.pack()
+meatLabel.pack()
 pepperoniBox.pack()
 sausageBox.pack()
 hamBox.pack()
 sardinesBox.pack()
+othersLabel.pack()
 greenPeppersBox.pack()
 mushroomsBox.pack()
 olivesBox.pack()
@@ -74,5 +195,7 @@ onionsBox.pack()
 pineappleBox.pack()
 extraCheeseBox.pack()
 createPizzaButton.pack()
+imageInsert.pack()
 
+# runs the GUI
 root.mainloop()
